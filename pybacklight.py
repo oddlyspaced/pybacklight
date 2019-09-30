@@ -13,6 +13,7 @@ def parse_arg() :
                 set_backlight(arg)
             except Exception as e:
                 print("Please enter correct value!")
+                print_help()
 
 def set_backlight(brightness) :
     card = get_card()
@@ -22,12 +23,18 @@ def set_backlight(brightness) :
         brightness = current_brightness + int(brightness)
         if brightness < 0 :
             brightness = 0
-        if brightness > 255 :
-            brightness = 255
+        if brightness > get_max_brightness() :
+            brightness = get_max_brightness()
     subprocess.call("echo \"" + str(brightness) + "\" > /sys/class/backlight/" + card + "/brightness", shell=True)
 
 # get card returns the first instance of the card it finds
 def get_card() :
     return str(list(listdir("/sys/class/backlight"))[0])
+
+def get_max_brightness() :
+    return int(str(subprocess.check_output("cat /sys/class/backlight/" + get_card() + "/max_brightness", shell=True))[2:-3])
+
+def print_help() :
+    print("usage: <pybacklight> <value>")
 
 parse_arg()

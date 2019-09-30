@@ -1,7 +1,7 @@
 #!/bin/python3
 import subprocess
 import sys
-
+from os import listdir
 def parse_arg() :
     args = list(sys.argv)
     for arg in args :
@@ -15,12 +15,19 @@ def parse_arg() :
                 print("Please enter correct value!")
 
 def set_backlight(brightness) :
-    current_brightness = int(str(subprocess.check_output("cat /sys/class/backlight/amdgpu_bl0/brightness", shell=True))[2:-3])
-    print("cur : " + str(current_brightness))
+    card = get_card()
+    current_brightness = int(str(subprocess.check_output("cat /sys/class/backlight/" + card + "/brightness", shell=True))[2:-3])
     brightness = str(brightness)
-    print("bri : " + str(brightness))
     if (brightness.startswith("+") or brightness.startswith("-")) :
         brightness = current_brightness + int(brightness)
-    subprocess.call("echo \"" + str(brightness) + "\" > /sys/class/backlight/amdgpu_bl0/brightness", shell=True)
+        if brightness < 0 :
+            brightness = 0
+        if brightness > 255 :
+            brightness = 255
+    subprocess.call("echo \"" + str(brightness) + "\" > /sys/class/backlight/" + card + "/brightness", shell=True)
+
+# get card returns the first instance of the card it finds
+def get_card() :
+    return str(list(listdir("/sys/class/backlight"))[0])
 
 parse_arg()

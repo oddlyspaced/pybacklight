@@ -11,7 +11,7 @@ def parse_arg() :
             try :
                 arg_copy = str(arg)
                 print("call 1")
-                arg = int(arg)
+                arg = int(arg) # this serves as the test case, if the argument is a int or not
                 print("call 2")
                 set_backlight(arg_copy)
                 print("call 3")

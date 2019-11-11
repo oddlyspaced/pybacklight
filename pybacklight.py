@@ -4,14 +4,22 @@ import sys
 from os import listdir
 def parse_arg() :
     args = list(sys.argv)
-    for arg in args :
-        arg = str(arg)
-        try :
-            arg = int(arg)
-            set_backlight(arg)
-        except :
-            print_help()
-            continue
+    args.remove(args[0]) # removing script call
+    if len(args) > 0 :
+        print(args)
+        for arg in args :
+            try :
+                arg_copy = str(arg)
+                print("call 1")
+                arg = int(arg)
+                print("call 2")
+                set_backlight(arg_copy)
+                print("call 3")
+                quit()
+            except :
+                print_help()
+                print("call 4")
+                quit()
 
 def set_backlight(brightness) :
     card = get_card()

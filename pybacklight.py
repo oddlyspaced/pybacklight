@@ -6,14 +6,11 @@ def parse_arg() :
     args = list(sys.argv)
     for arg in args :
         arg = str(arg)
-        if arg.startswith("/") :
+        try :
+            arg = int(arg)
+            set_backlight(arg)
+        except :
             continue
-        else :
-            try :
-                set_backlight(arg)
-            except Exception as e:
-                print("Please enter correct value!")
-                print_help()
 
 def set_backlight(brightness) :
     card = get_card()
@@ -25,7 +22,8 @@ def set_backlight(brightness) :
             brightness = 0
         if brightness > get_max_brightness() :
             brightness = get_max_brightness()
-    subprocess.call("echo \"" + str(brightness) + "\" > /sys/class/backlight/" + card + "/brightness", shell=True)
+    command = str("echo \"" + str(brightness) + "\" > /sys/class/backlight/" + str(card) + "/brightness")
+    subprocess.call(command, shell=True, executable='/bin/bash')
 
 # get card returns the first instance of the card it finds
 def get_card() :
@@ -35,6 +33,12 @@ def get_max_brightness() :
     return int(str(subprocess.check_output("cat /sys/class/backlight/" + get_card() + "/max_brightness", shell=True))[2:-3])
 
 def print_help() :
-    print("usage: <pybacklight> <value>")
+    print("Usage: <pybacklight> <value>")
+    print("pybacklight -<value>  -> Decreases brightness by <value>")
+    print("Example: pybacklight -5        -> Will decreases brightness by 5")
+    print("pybacklight +<value>  -> Increases brightness by <value>")
+    print("Example: pybacklight +5        -> Will increase brightness by 5")
+    print("pybacklight <value>   -> Will set <value> as brightness")
+    print("Example: pybacklight 100  -> Will set brightness to 100 points")
 
 parse_arg()

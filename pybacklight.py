@@ -6,20 +6,17 @@ def parse_arg() :
     args = list(sys.argv)
     args.remove(args[0]) # removing script call
     if len(args) > 0 :
-        print(args)
         for arg in args :
             try :
                 arg_copy = str(arg)
-                print("call 1")
-                arg = int(arg) # this serves as the test case, if the argument is a int or not
-                print("call 2")
+                arg = int(arg) # this serves as the test case
                 set_backlight(arg_copy)
-                print("call 3")
-                quit()
+                break
             except :
                 print_help()
-                print("call 4")
                 quit()
+    else :
+        print_help()
 
 def set_backlight(brightness) :
     card = get_card()

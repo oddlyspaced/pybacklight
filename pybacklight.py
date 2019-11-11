@@ -10,6 +10,7 @@ def parse_arg() :
             arg = int(arg)
             set_backlight(arg)
         except :
+            print_help()
             continue
 
 def set_backlight(brightness) :
